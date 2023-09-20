@@ -18,6 +18,9 @@ let statsIntervalId;
 let videoIsPlaying;
 let lastBytesReceived;
 
+const chatResponseP = document.getElementById('reponseDuChat')
+var reponseGPT = ""
+
 const talkVideo = document.getElementById('talk-video');
 talkVideo.setAttribute('playsinline', '');
 const peerStatusLabel = document.getElementById('peer-status-label');
@@ -70,11 +73,13 @@ connectButton.onclick = async () => {
       session_id: sessionId,
     }),
   });
+  console.log("AWAKE");
 };
 
 const talkButton = document.getElementById('talk-button');
 
 talkButton.onclick = async () => {
+  chatResponseP.textContent = "En attente..."
   const questionDeLUtilisateur = document.getElementById('monChamp').value;
   //console.log(questionDeLUtilisateur);
   if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
@@ -103,8 +108,7 @@ talkButton.onclick = async () => {
             "session_id": sessionId,
           }),
         });
-        var chatResponseP = document.getElementById('reponseDuChat')
-        chatResponseP.textContent = firstApiResponse.response
+        reponseGPT = firstApiResponse.response
         // Vérification de la réponse du deuxième appel
         if (secondApiResponse.ok) {
           // Traitement de la réponse de la deuxième API si nécessaire
@@ -193,6 +197,11 @@ function onVideoStatusChange(videoIsPlaying, stream) {
   }
   streamingStatusLabel.innerText = status;
   streamingStatusLabel.className = 'streamingState-' + status;
+  if (reponseGPT) {
+    chatResponseP.textContent = reponseGPT
+  }else{
+    chatResponseP.textContent = "En attente..."
+  }
 }
 
 function onTrack(event) {

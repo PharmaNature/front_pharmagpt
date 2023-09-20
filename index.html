@@ -162,7 +162,7 @@
     </div>
     <br />
     <div >
-      <p id="reponseDuChat">...attendre quelques secondes pour le réveil et la réponse...</p>
+      <p id="reponseDuChat">Réveillez moi pour pouvoir me poser une question.</p>
     </div>
 
     <!-- added div#buttons -->
@@ -179,10 +179,21 @@
       <button id="talk-button" type="button">Envoyer la question</button>
 
     </div>
+
+    <div class="hide">
+      <p id="peer-status-label"></p>
+      <p id="ice-status-label"></p>
+      <p id="ice-gathering-status-label"></p>
+      <p id="signaling-status-label"></p>
+      <p id="streaming-status-label"></p>
+    </div>
   </div>
 
   <script type="module" src="./index.js"></script>
   <style>
+    .hide{
+      display: none;
+    }
     #reponseDuChat{
       font-weight: bold;
     }
