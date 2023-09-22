@@ -3,6 +3,29 @@ import DID_API from './api.json' assert { type: 'json' };
 
 if (DID_API.key == '🤫') alert('Please put your api key inside ./api.json and restart..');
 
+const modePharma = document.getElementById('mode_pharma')
+const modeGPT = document.getElementById('mode_gpt')
+const modePerroquet = document.getElementById('mode_perroquet')
+const modeActuel = document.getElementById('modeActuel')
+let mode = "Pharma"
+
+modePharma.onclick = async () => { 
+  mode = "Pharma"
+  modeActuel.textContent = "Mode actuel : "+ mode
+  //console.log(mode);
+}
+modeGPT.onclick = async () => {
+  mode = "GPT"
+  modeActuel.textContent = "Mode actuel : "+ mode
+  //console.log(mode)
+}
+modePerroquet.onclick = async () => {
+  mode = "Perroquet"
+  modeActuel.textContent = "Mode actuel : "+ mode
+  //console.log(mode);
+}
+
+
 const RTCPeerConnection = (
   window.RTCPeerConnection ||
   window.webkitRTCPeerConnection ||
@@ -85,33 +108,19 @@ talkButton.onclick = async () => {
   if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
     try {
       // Premier appel à l'API
-      const firstApiResponse =  await askGPT(questionDeLUtilisateur)
+      let firstApiResponse = ""
+      if (mode === "Pharma") {
+        firstApiResponse =  await askPharmaGPT(questionDeLUtilisateur)
+      } else if (mode === "GPT"){
+        firstApiResponse =  await askGPT(questionDeLUtilisateur)
+      } else if (mode === "Perroquet"){
+        firstApiResponse = {response:questionDeLUtilisateur}
+      }
 
       // Vérification de la réponse du premier appel
       if (firstApiResponse) {
         // Deuxième appel à l'API en utilisant les données de la première réponse
-        const secondApiResponse = await fetchWithRetries(`${DID_API.url}/talks/streams/${streamId}`, {
-          method: 'POST',
-          headers: {
-            Authorization: `Basic ${DID_API.key}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            "script": {
-              "type": 'text',
-              "input": firstApiResponse.response,
-              "provider": {
-                "type": "microsoft",
-                "voice_id": "fr-FR-JosephineNeural"
-              }
-            },
-            "driver_url": 'bank://lively/',
-            "config": {
-              "stitch": true,
-            },
-            "session_id": sessionId,
-          }),
-        });
+        const secondApiResponse = await askDiD(firstApiResponse.response)
         reponseGPT = firstApiResponse.response
         // Vérification de la réponse du deuxième appel
         if (secondApiResponse.ok) {
@@ -331,7 +340,7 @@ async function fetchWithRetries(url, options, retries = 1) {
 }
 
 
-async function askGPT(questionDeLUtilisateur){
+async function askPharmaGPT(questionDeLUtilisateur){
   const requete = await fetch('http://localhost:8080/gpt/goodanswer', {
         method: 'POST',
         headers: {
@@ -344,4 +353,43 @@ async function askGPT(questionDeLUtilisateur){
       });
       const result = await requete.json()
       return result
+}
+
+async function askGPT(questionDeLUtilisateur){
+  const requete = await fetch('http://localhost:8080/gpt/answer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "message": questionDeLUtilisateur
+        })
+      });
+      const result = await requete.json()
+      return result
+}
+
+async function askDiD(textForDiD){
+  fetchWithRetries(`${DID_API.url}/talks/streams/${streamId}`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${DID_API.key}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      "script": {
+        "type": 'text',
+        "input": textForDiD,
+        "provider": {
+          "type": "microsoft",
+          "voice_id": "fr-FR-JosephineNeural"
+        }
+      },
+      "driver_url": 'bank://lively/',
+      "config": {
+        "stitch": true,
+      },
+      "session_id": sessionId,
+    }),
+  });
 }

@@ -153,6 +153,14 @@
 
 <body>
   <!-- adde "id=content" -->
+  <div>
+    <button id="mode_pharma"> Mode Pharma</button>
+    <button id="mode_gpt"> Mode GPT</button>
+    <button id="mode_perroquet"> Mode Perroquet</button>
+  </div>
+  <div>
+    <h3 id="modeActuel">Mode actuel : Pharma </h3>
+  </div>
   <div id="content">
     <!-- added "id=video-wrapper" -->
     <div id="video-wrapper">
@@ -174,7 +182,7 @@
     </div>
     <div class="input">
       <label for="monChamp">Posez une question sur vos besoins ou vos soucis de santé. (max. 150 caractères) :</label>
-      <textarea type="text" id="monChamp" name="monChamp" cols="50" maxlength="200"></textarea>
+      <textarea type="text" id="monChamp" name="monChamp" cols="50" maxlength="150"></textarea>
       <p>Caractères restants : <span id="compteur">150</span></p>
       <button id="talk-button" type="button">Envoyer la question</button>
 
