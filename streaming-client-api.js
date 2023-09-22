@@ -19,7 +19,7 @@ let videoIsPlaying;
 let lastBytesReceived;
 
 const chatResponseP = document.getElementById('reponseDuChat')
-var reponseGPT = ""
+let reponseGPT = ""
 
 const talkVideo = document.getElementById('talk-video');
 talkVideo.setAttribute('playsinline', '');
@@ -100,6 +100,10 @@ talkButton.onclick = async () => {
             "script": {
               "type": 'text',
               "input": firstApiResponse.response,
+              "provider": {
+                "type": "microsoft",
+                "voice_id": "fr-FR-JosephineNeural"
+              }
             },
             "driver_url": 'bank://lively/',
             "config": {
@@ -200,7 +204,7 @@ function onVideoStatusChange(videoIsPlaying, stream) {
   if (reponseGPT) {
     chatResponseP.textContent = reponseGPT
   }else{
-    chatResponseP.textContent = "En attente..."
+    chatResponseP.textContent = "En attente d'une question"
   }
 }
 
