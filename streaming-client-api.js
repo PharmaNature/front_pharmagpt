@@ -44,6 +44,9 @@ let lastBytesReceived;
 const chatResponseP = document.getElementById('reponseDuChat')
 let reponseGPT = ""
 
+const loader = document.getElementById('loader')
+
+
 const talkVideo = document.getElementById('talk-video');
 talkVideo.setAttribute('playsinline', '');
 const peerStatusLabel = document.getElementById('peer-status-label');
@@ -57,7 +60,7 @@ connectButton.onclick = async () => {
   if (peerConnection && peerConnection.connectionState === 'connected') {
     return;
   }
-
+  loader.className = 'loader'
   stopAllStreams();
   closePC();
 
@@ -103,6 +106,7 @@ const talkButton = document.getElementById('talk-button');
 
 talkButton.onclick = async () => {
   chatResponseP.textContent = "En attente..."
+  loader.className = 'loader'
   const questionDeLUtilisateur = document.getElementById('monChamp').value;
   //console.log(questionDeLUtilisateur);
   if (peerConnection?.signalingState === 'stable' || peerConnection?.iceConnectionState === 'connected') {
@@ -212,8 +216,10 @@ function onVideoStatusChange(videoIsPlaying, stream) {
   streamingStatusLabel.className = 'streamingState-' + status;
   if (reponseGPT) {
     chatResponseP.textContent = reponseGPT
+    loader.className = 'hide'
   }else{
     chatResponseP.textContent = "En attente d'une question"
+    loader.className = 'hide'
   }
 }
 

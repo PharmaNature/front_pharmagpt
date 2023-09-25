@@ -169,7 +169,8 @@
       </div>
     </div>
     <br />
-    <div >
+    <div class="load-anwser">
+      <div id="loader" class="hide"></div>
       <p id="reponseDuChat">Réveillez moi pour pouvoir me poser une question.</p>
     </div>
 
@@ -216,6 +217,23 @@
       flex-direction: column;
       align-items: center;
     }
+    .load-anwser{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .loader {
+  width: 25px;
+  height: 25px;
+  border: 5px solid #f3f3f3; /* Couleur de la bordure de la loader */
+  border-top: 5px solid #7459fe; /* Couleur de la bordure supérieure */
+  border-radius: 50%;
+  animation: spin 1s linear infinite; /* Utilisation de l'animation "spin" définie ci-dessous */
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
   </style>
   <script>
     const champTexte = document.getElementById('monChamp');
